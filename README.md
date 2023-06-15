@@ -23,7 +23,7 @@ Install these dependencies with `pip3 install <module name>`
 - h5py
 - keras
 
-
+```
 #include <stdio.h>
 #include <unistd.h>
 
@@ -86,4 +86,4 @@ int main() {
 
     return 0;
 }
-
+```
