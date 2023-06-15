@@ -5,7 +5,6 @@ import tflite_runtime.interpreter as tflite
 from utils.datasets import get_labels
 from utils.inference import apply_offsets
 
-# 모델 대기
 emotion_model_path = './models/emotion_model.tflite'
 emotion_labels = get_labels('fer2013')
 

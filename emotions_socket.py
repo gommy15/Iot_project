@@ -7,12 +7,10 @@ import socket
 
 SERVER_PORT = 8888
 
-# 소켓 생성
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind(('127.0.0.1', SERVER_PORT))
 server_socket.listen(1)
 
-# 모델 대기
 emotion_model_path = './models/emotion_model.tflite'
 emotion_labels = get_labels('fer2013')
 
@@ -27,7 +25,6 @@ cap = cv2.VideoCapture(0)
 cap.set(3, 320)
 cap.set(4, 240)
 
-# 클라이언트 연결 대기
 client_socket, addr = server_socket.accept()
 print('Connected by', addr)
 
@@ -61,7 +58,6 @@ while True:
 
     cv2.imshow('video', gray_image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        # 소켓 닫기
         client_socket.close()
         server_socket.close()
         break
