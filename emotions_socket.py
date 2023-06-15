@@ -1,9 +1,16 @@
 import cv2
 import numpy as np
-import tensorflow as tf
 import tflite_runtime.interpreter as tflite
 from utils.datasets import get_labels
 from utils.inference import apply_offsets
+import socket
+
+SERVER_PORT = 8888
+
+# 소켓 생성
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind(('127.0.0.1', SERVER_PORT))
+server_socket.listen(1)
 
 # 모델 대기
 emotion_model_path = './models/emotion_model.tflite'
@@ -19,6 +26,10 @@ emotion_target_size = input_details[0]['shape'][1:3]
 cap = cv2.VideoCapture(0)
 cap.set(3, 320)
 cap.set(4, 240)
+
+# 클라이언트 연결 대기
+client_socket, addr = server_socket.accept()
+print('Connected by', addr)
 
 while True:
     ret, bgr_image = cap.read()
@@ -43,11 +54,16 @@ while True:
 
             cv2.rectangle(gray_image, (x1, y1), (x2, y2), (0, 0, 255), 3)
             cv2.putText(gray_image, face_text, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+            client_socket.sendall(face_index.encode())
         except:
             continue
 
     cv2.imshow('video', gray_image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        # 소켓 닫기
+        client_socket.close()
+        server_socket.close()
         break
 
 cap.release()
